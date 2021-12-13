@@ -1,10 +1,12 @@
-import 'package:app_ta_caro/modules/login/login_controller.dart';
-import 'package:app_ta_caro/shared/theme/app_theme.dart';
-import 'package:app_ta_caro/shared/utils/state.dart';
-import 'package:app_ta_caro/shared/widgets/button/button.dart';
-import 'package:app_ta_caro/shared/widgets/input_text/input_text.dart';
 import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
+
+import '../../shared/services/app_database.dart';
+import '../../shared/theme/app_theme.dart';
+import '../../shared/widgets/button/button.dart';
+import '../../shared/widgets/input_text/input_text.dart';
+import 'login_controller.dart';
+import 'repositories/login_repository_impl.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -15,13 +17,16 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  final controller = LoginController();
+  late final LoginController controller;
 
   @override
   void initState() {
+    controller = LoginController(
+        repository: LoginRepositoryImpl(database: AppDatabase.instance));
     controller.addListener(() {
       controller.state.when(
-        success: (value) => Navigator.pushNamed(context, '/home'),
+        success: (value) =>
+            Navigator.pushNamed(context, '/home', arguments: value),
         error: (message, _) => scaffoldState.currentState!.showBottomSheet(
           (context) => BottomSheet(
             onClosing: () {},

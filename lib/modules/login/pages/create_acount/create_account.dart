@@ -1,9 +1,12 @@
-import 'package:app_ta_caro/modules/login/pages/create_acount/create_account_controller.dart';
-import 'package:app_ta_caro/shared/theme/app_theme.dart';
-import 'package:app_ta_caro/shared/widgets/button/button.dart';
-import 'package:app_ta_caro/shared/widgets/input_text/input_text.dart';
 import 'package:flutter/material.dart';
 import 'package:validators/validators.dart';
+
+import '../../../../shared/services/app_database.dart';
+import '../../../../shared/theme/app_theme.dart';
+import '../../../../shared/widgets/button/button.dart';
+import '../../../../shared/widgets/input_text/input_text.dart';
+import '../../repositories/login_repository_impl.dart';
+import 'create_account_controller.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({Key? key}) : super(key: key);
@@ -14,13 +17,15 @@ class CreateAccountPage extends StatefulWidget {
 
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final scaffoldState = GlobalKey<ScaffoldState>();
-  final controller = CreateAccountController();
+  late final CreateAccountController controller;
 
   @override
   void initState() {
+    controller = CreateAccountController(
+        repository: LoginRepositoryImpl(database: AppDatabase.instance));
     controller.addListener(() {
       controller.state.when(
-        success: (value) => Navigator.pushNamed(context, '/home'),
+        success: (value) => Navigator.pop(context),
         error: (message, _) => scaffoldState.currentState!.showBottomSheet(
           (context) => BottomSheet(
             onClosing: () {},

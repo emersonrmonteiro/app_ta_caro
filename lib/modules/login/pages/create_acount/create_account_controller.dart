@@ -1,12 +1,19 @@
-import 'package:app_ta_caro/shared/utils/state.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../shared/model/user_model.dart';
+import '../../../../shared/services/app_database.dart';
+import '../../../../shared/utils/state.dart';
+import '../../repositories/login_repository_impl.dart';
+
 class CreateAccountController extends ChangeNotifier {
+  final LoginRepositoryImpl repository;
   AppState state = AppState.empty();
   final formKey = GlobalKey<FormState>();
   String _name = "";
   String _email = "";
   String _password = "";
+
+  CreateAccountController({required this.repository});
 
   void onChange({String? name, String? email, String? password}) {
     _name = name ?? _name;
@@ -32,10 +39,14 @@ class CreateAccountController extends ChangeNotifier {
     if (validate()) {
       try {
         update(AppState.loading());
-        await Future.delayed(Duration(seconds: 2));
-        update(AppState.success<String>('Conta criada com sucesso'));
+        final response = await AppDatabase.instance.createAccount(
+          name: _name,
+          email: _email,
+          password: _password,
+        );
+        update(AppState.success<UserModel>(response));
       } catch (e) {
-        update(AppState.error('Não foi possível criar conta'));
+        update(AppState.error(e.toString()));
       }
     }
   }
