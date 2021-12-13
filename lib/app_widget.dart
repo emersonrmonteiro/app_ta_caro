@@ -1,3 +1,5 @@
+import 'package:app_ta_caro/modules/home/home_pade.dart';
+import 'package:app_ta_caro/modules/login/pages/create_acount/create_account.dart';
 import 'package:app_ta_caro/modules/splash.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,8 @@ class AppWidget extends StatelessWidget {
       routes: {
         "/splash": (context) => const SplashPage(),
         "/login": (context) => const LoginPage(),
+        "/login/create-account": (context) => const CreateAccountPage(),
+        "/home": (context) => const HomePage(),
       },
     );
   }
